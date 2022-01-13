@@ -18,6 +18,14 @@ class Game():
 	def set_block(self, x, y, value):
 		self.blocks[x][y] = value
 
+	def has_zero_value(self):
+		for y in range(self.get_blockcount()):
+			for x in range(self.get_blockcount()):
+				if self.get_block(x, y) == 0:
+					return True
+
+		return False
+
 	def add_block_of_two(self):
 		while True:
 			x = random.randint(0, self.get_blockcount())
