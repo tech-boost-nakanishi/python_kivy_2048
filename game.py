@@ -28,8 +28,8 @@ class Game():
 
 	def add_block_of_two(self):
 		while True:
-			x = random.randint(0, self.get_blockcount())
-			y = random.randint(0, self.get_blockcount())
+			x = random.randint(0, self.get_blockcount() - 1)
+			y = random.randint(0, self.get_blockcount() - 1)
 
 			if self.get_block(x, y) == 0:
 				self.set_block(x, y, 2)
