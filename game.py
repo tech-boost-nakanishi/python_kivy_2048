@@ -1,3 +1,5 @@
+import random
+
 class Game():
 
 	def __init__(self, blockcount):
@@ -15,3 +17,12 @@ class Game():
 
 	def set_block(self, x, y, value):
 		self.blocks[x][y] = value
+
+	def add_block_of_two(self):
+		while True:
+			x = random.randint(0, self.get_blockcount())
+			y = random.randint(0, self.get_blockcount())
+
+			if self.get_block(x, y) == 0:
+				self.set_block(x, y, 2)
+				break
