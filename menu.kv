@@ -1,0 +1,44 @@
+<MenuScreen>:
+    
+    Label:
+        text: '2048'
+        color: (0, 0, 0, 1)
+        font_size: root.width / 6
+        size_hint: (1, .5)
+        pos_hint: {'center_x':0.5, 'top': 1}
+
+    Button:
+        text: 'スタート'
+        size_hint: (.7, .12)
+        pos_hint: {'center_x':0.5, 'y': 0.45}
+        font_size: root.width / 8
+        background_normal: ''
+        background_color: 0,0,0,0
+        canvas.before:
+            Color:
+                rgba: (1,.5,0,1) if self.state=='normal' else (1,.5,0,.5)
+            RoundedRectangle:
+                pos: self.pos
+                size: self.size
+                radius: [20,]
+        on_press:
+            root.manager.current = 'game'
+            root.manager.transition.direction = 'left'
+
+    Button:
+        text: '遊びかた'
+        size_hint: (.7, .12)
+        pos_hint: {'center_x':0.5, 'y': 0.25}
+        font_size: root.width / 8
+        background_normal: ''
+        background_color: 0,0,0,0
+        canvas.before:
+            Color:
+                rgba: (1,.7,0,1) if self.state=='normal' else (1,.7,0,.5)
+            RoundedRectangle:
+                pos: self.pos
+                size: self.size
+                radius: [20,]
+        on_press:
+            root.manager.current = 'howto'
+            root.manager.transition.direction = 'left'

@@ -1,0 +1,51 @@
+<GameScreen>:
+
+    Button:
+        text: '最初から'
+        size_hint: (.7, .12)
+        pos_hint: {'center_x':0.5, 'y':0.84}
+        font_size: root.width / 8
+        background_normal: ''
+        background_color: 0,0,0,0
+        canvas.before:
+            Color:
+                rgba: (1,.5,0,1) if self.state=='normal' else (1,.5,0,.5)
+            RoundedRectangle:
+                pos: self.pos
+                size: self.size
+                radius: [20,]
+        on_press:
+            root.manager.current = 'game'
+            root.manager.transition.direction = 'left'
+
+    GameArea:
+        rows: 4
+        cols: 4
+        size_hint: (1, .6)
+        pos_hint: {'center_y':0.5}
+        padding: 10
+        spacing: 10
+        canvas.before:
+            Color:
+                rgba: (.5, .5, .5, 1)
+            Rectangle:
+                pos: self.pos
+                size: self.size
+
+    Button:
+        text: '遊びかた'
+        size_hint: (.7, .12)
+        pos_hint: {'center_x':0.5, 'y':0.05}
+        font_size: root.width / 8
+        background_normal: ''
+        background_color: 0,0,0,0
+        canvas.before:
+            Color:
+                rgba: (1,.7,0,1) if self.state=='normal' else (1,.7,0,.5)
+            RoundedRectangle:
+                pos: self.pos
+                size: self.size
+                radius: [20,]
+        on_press:
+            root.manager.current = 'howto'
+            root.manager.transition.direction = 'right'

@@ -1,0 +1,38 @@
+<HowtoScreen>:
+    Label:
+        text: '遊びかた'
+        color: (0, 0, 0, 1)
+        font_size: root.width / 6
+        size_hint: (1, .5)
+        pos_hint: {'center_x':0.5, 'top': 1}
+
+    BoxLayout:
+    	orientation: 'vertical'
+        size: root.size
+        padding: 20
+
+	    Label:
+	        text:
+	        	'4×4のマス内にあるブロック（数字）をスライドさせて、2→4→8…と合成していき、最終的に2048のブロックができれば成功'
+	        color: (0, 0, 0, 1)
+	        font_size: root.width / 12
+	        text_size: self.size
+	        valign: 'middle'
+
+    Button:
+        text: 'メニューに戻る'
+        size_hint: (.7, .12)
+        pos_hint: {'center_x':0.5, 'y': 0.15}
+        font_size: root.width / 11
+        background_normal: ''
+        background_color: 0,0,0,0
+        canvas.before:
+            Color:
+                rgba: (1,.5,0,1) if self.state=='normal' else (1,.5,0,.5)
+            RoundedRectangle:
+                pos: self.pos
+                size: self.size
+                radius: [20,]
+        on_press:
+            root.manager.current = 'menu'
+            root.manager.transition.direction = 'right'
