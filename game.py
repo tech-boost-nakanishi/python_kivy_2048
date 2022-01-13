@@ -4,7 +4,7 @@ class Game():
 
 	def __init__(self, blockcount):
 		self.blockcount = blockcount
-		self.blocks = [[0] * 4 for i in range(4)]
+		self.blocks = [[0] * self.blockcount for i in range(self.blockcount)]
 
 	def get_blockcount(self):
 		return self.blockcount
