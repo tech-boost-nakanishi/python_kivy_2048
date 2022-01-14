@@ -3,9 +3,10 @@ from kivy.app import App
 from kivy.lang import Builder
 from kivy.uix.label import Label
 from kivy.uix.button import Button
+from kivy.properties import ListProperty
 from kivy.uix.gridlayout import GridLayout
 from kivy.uix.behaviors import ButtonBehavior
-from kivy.uix.screenmanager import ScreenManager, Screen
+from kivy.uix.screenmanager import ScreenManager, Screen, NoTransition, SlideTransition
 
 # ウィンドウの背景色
 from kivy.core.window import Window
@@ -22,12 +23,23 @@ class HowtoScreen(Screen):
     pass
 
 class GameScreen(Screen):
-	pass	
+	pass
 
 class GameArea(ButtonBehavior, GridLayout):
 
 	def __init__(self, **kwargs):
 		super(GameArea, self).__init__(**kwargs)
+		self.blocks = ListProperty([])
+
+		# ゲームクラスのインスタンス生成
+		import game
+		self.game = game.Game(4)
+
+		# ランダムに2のブロックを2個生成
+		self.game.add_block_of_two()
+		self.game.add_block_of_two()
+
+		self.blocks = self.game.get_blocks()
 
 		# ブロックの色と文字色
 		self.colors = {
@@ -45,34 +57,15 @@ class GameArea(ButtonBehavior, GridLayout):
 			2048: {'background_color':(1, 1, 0, 1), 'color':(0, 0, 0, 1)}
 		}
 
-		# ゲームクラスのインスタンス生成
-		import game
-		self.game = game.Game(4)
-		self.game.set_block(0, 0, 0)
-		self.game.set_block(1, 0, 2)
-		self.game.set_block(2, 0, 4)
-		self.game.set_block(3, 0, 8)
-		self.game.set_block(0, 1, 16)
-		self.game.set_block(1, 1, 32)
-		self.game.set_block(2, 1, 64)
-		self.game.set_block(3, 1, 128)
-		self.game.set_block(0, 2, 256)
-		self.game.set_block(1, 2, 512)
-		self.game.set_block(2, 2, 1024)
-		self.game.set_block(3, 2, 2048)
-
-		self.show_blocks()
-
-	def show_blocks(self):
-		self.clear_widgets()
+		# ブロックの描画
 		for y in range(self.game.get_blockcount()):
 			for x in range(self.game.get_blockcount()):
 				self.add_widget(Button(
-					text = str(self.game.get_block(x, y)),
-					font_size = self.width / (len(str(self.game.get_block(x, y))) + 1),
+					text = str(self.blocks[x][y]),
+					font_size = self.width / (len(str(self.blocks[x][y])) + 1),
 					background_normal = '',
-					background_color = self.colors[self.game.get_block(x, y)]['background_color'],
-					color = self.colors[self.game.get_block(x, y)]['color']
+					background_color = self.colors[self.blocks[x][y]]['background_color'],
+					color = self.colors[self.blocks[x][y]]['color']
 				))
     
 	def on_touch_down(self, touch):
@@ -92,6 +85,13 @@ class GameApp(App):
 		self.sm.add_widget(HowtoScreen(name='howto'))
 		self.sm.add_widget(GameScreen(name='game'))
 		return self.sm
+
+	def restart(self):
+		self.sm.transition = NoTransition()
+		self.sm.clear_widgets(screens=[self.sm.get_screen('game')])
+		self.sm.add_widget(GameScreen(name='game'))
+		self.sm.current = 'game'
+		self.sm.transition = SlideTransition()
  
 if __name__ == '__main__':
     GameApp().run()

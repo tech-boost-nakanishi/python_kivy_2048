@@ -15,8 +15,7 @@
                 size: self.size
                 radius: [20,]
         on_press:
-            root.manager.current = 'game'
-            root.manager.transition.direction = 'left'
+            app.restart()
 
     GameArea:
         rows: 4
