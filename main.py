@@ -3,9 +3,7 @@ from kivy.app import App
 from kivy.lang import Builder
 from kivy.uix.label import Label
 from kivy.uix.button import Button
-from kivy.properties import ListProperty
 from kivy.uix.gridlayout import GridLayout
-from kivy.uix.behaviors import ButtonBehavior
 from kivy.uix.screenmanager import ScreenManager, Screen, NoTransition, SlideTransition
 
 # ウィンドウの背景色
@@ -25,11 +23,10 @@ class HowtoScreen(Screen):
 class GameScreen(Screen):
 	pass
 
-class GameArea(ButtonBehavior, GridLayout):
+class GameArea(GridLayout):
 
 	def __init__(self, **kwargs):
 		super(GameArea, self).__init__(**kwargs)
-		self.blocks = ListProperty([])
 
 		# ゲームクラスのインスタンス生成
 		import game
@@ -39,33 +36,37 @@ class GameArea(ButtonBehavior, GridLayout):
 		self.game.add_block_of_two()
 		self.game.add_block_of_two()
 
-		self.blocks = self.game.get_blocks()
-
 		# ブロックの色と文字色
 		self.colors = {
-			0: {'background_color':(.7, .7, .7, 1), 'color':(0, 0, 0, 0)},
-			2: {'background_color':(.83, .77, .68, 1), 'color':(0, 0, 0, 1)},
-			4: {'background_color':(.96, .87, .7, 1), 'color':(0, 0, 0, 1)},
-			8: {'background_color':(1, .62, .47, 1), 'color':(1, 1, 1, 1)},
-			16: {'background_color':(.98, .5, .44, 1), 'color':(1, 1, 1, 1)},
-			32: {'background_color':(1, .38, .27, 1), 'color':(1, 1, 1, 1)},
-			64: {'background_color':(1, 0, 0, 1), 'color':(1, 1, 1, 1)},
-			128: {'background_color':(1, 1, 0, .8), 'color':(0, 0, 0, 1)},
-			256: {'background_color':(1, 1, 0, .85), 'color':(0, 0, 0, 1)},
-			512: {'background_color':(1, 1, 0, .9), 'color':(0, 0, 0, 1)},
-			1024: {'background_color':(1, 1, 0, .95), 'color':(0, 0, 0, 1)},
-			2048: {'background_color':(1, 1, 0, 1), 'color':(0, 0, 0, 1)}
+			0: {'background_color':(.7, .7, .7, 1), 'color':(0, 0, 0, 0), 'font_size':self.width / 2},
+			2: {'background_color':(.83, .77, .68, 1), 'color':(0, 0, 0, 1), 'font_size':self.width / 2},
+			4: {'background_color':(.96, .87, .7, 1), 'color':(0, 0, 0, 1), 'font_size':self.width / 2},
+			8: {'background_color':(1, .62, .47, 1), 'color':(1, 1, 1, 1), 'font_size':self.width / 2},
+			16: {'background_color':(.98, .5, .44, 1), 'color':(1, 1, 1, 1), 'font_size':self.width / 3},
+			32: {'background_color':(1, .38, .27, 1), 'color':(1, 1, 1, 1), 'font_size':self.width / 3},
+			64: {'background_color':(1, 0, 0, 1), 'color':(1, 1, 1, 1), 'font_size':self.width / 3},
+			128: {'background_color':(1, 1, 0, .8), 'color':(0, 0, 0, 1), 'font_size':self.width / 4},
+			256: {'background_color':(1, 1, 0, .85), 'color':(0, 0, 0, 1), 'font_size':self.width / 4},
+			512: {'background_color':(1, 1, 0, .9), 'color':(0, 0, 0, 1), 'font_size':self.width / 4},
+			1024: {'background_color':(1, 1, 0, .95), 'color':(0, 0, 0, 1), 'font_size':self.width / 5},
+			2048: {'background_color':(1, 1, 0, 1), 'color':(0, 0, 0, 1), 'font_size':self.width / 5}
 		}
+
+		self.update_blocks()
+
+	def update_blocks(self):
+		# ブロックの削除
+		self.clear_widgets()
 
 		# ブロックの描画
 		for y in range(self.game.get_blockcount()):
 			for x in range(self.game.get_blockcount()):
 				self.add_widget(Button(
-					text = str(self.blocks[x][y]),
-					font_size = self.width / (len(str(self.blocks[x][y])) + 1),
+					text = str(self.game.get_block(x, y)),
+					font_size = self.colors[self.game.get_block(x, y)]['font_size'],
 					background_normal = '',
-					background_color = self.colors[self.blocks[x][y]]['background_color'],
-					color = self.colors[self.blocks[x][y]]['color']
+					background_color = self.colors[self.game.get_block(x, y)]['background_color'],
+					color = self.colors[self.game.get_block(x, y)]['color']
 				))
     
 	def on_touch_down(self, touch):
