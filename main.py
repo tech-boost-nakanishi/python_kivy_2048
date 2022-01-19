@@ -29,6 +29,7 @@ class GameArea(GridLayout):
 		super(GameArea, self).__init__(**kwargs)
 		self._keyboard = Window.request_keyboard(self._keyboard_closed, self)
 		self._keyboard.bind(on_key_down=self._on_keyboard_down)
+		self.sx = self.sy = None
 
 		# ゲームクラスのインスタンス生成
 		import game
@@ -74,10 +75,46 @@ class GameArea(GridLayout):
 					background_color = self.colors[self.game.get_block(x, y)]['background_color'],
 					color = self.colors[self.game.get_block(x, y)]['color']
 				))
+
+	def game_progress(self, direct):
+		self.game.move_blocks(direct)
+		if self.game.get_num_count(0) > 0 and self.game.get_moved() == True:
+			self.game.add_block_of_two()
+		self.update_blocks()
+
+		if self.game.get_num_count(2048) > 0:
+			print('ゲームクリア!')
+
+		if self.game.get_num_count(0) == 0:
+			if self.game.can_move() == False:
+				print('ゲームオーバー!')
     
 	def on_touch_down(self, touch):
 		if self.collide_point(*touch.pos):
-			print(touch)
+			self.sx = touch.x
+			self.sy = touch.y
+
+	def on_touch_up(self, touch):
+		ex = touch.x
+		ey = touch.y
+
+		if self.sx == None or self.sy == None or self.sx == ex and self.sy == ey:
+			self.sx = self.sy = None
+			return
+
+		ax = abs(self.sx - ex)
+		ay = abs(self.sy - ey)
+		if ax > ay:
+			if self.sx > ex:
+				self.game_progress('left')
+			else:
+				self.game_progress('right')
+		else:
+			if self.sy > ey:
+				self.game_progress('down')
+			else:
+				self.game_progress('up')
+		self.sx = self.sy = None
 
 	def _keyboard_closed(self):
 		self._keyboard.unbind(on_key_down=self._on_keyboard_down)
@@ -85,17 +122,7 @@ class GameArea(GridLayout):
 
 	def _on_keyboard_down(self, keyboard, keycode, text, modifiers):
 		if keycode[1] in ['up', 'down', 'left', 'right']:
-			self.game.move_blocks(keycode[1])
-			if self.game.get_num_count(0) > 0 and self.game.get_moved() == True:
-				self.game.add_block_of_two()
-			self.update_blocks()
-
-			if self.game.get_num_count(2048) > 0:
-				print('ゲームクリア!')
-
-			if self.game.get_num_count(0) == 0:
-				if self.game.can_move() == False:
-					print('ゲームオーバー!')
+			self.game_progress(keycode[1])
  
 class GameApp(App):
 
