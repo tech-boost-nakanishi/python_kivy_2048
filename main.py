@@ -2,6 +2,8 @@ import japanize_kivy
 from kivy.app import App
 from kivy.lang import Builder
 from kivy.uix.label import Label
+from kivy.graphics import Color
+from kivy.graphics import Rectangle
 from kivy.uix.button import Button
 from kivy.uix.gridlayout import GridLayout
 from kivy.uix.screenmanager import ScreenManager, Screen, NoTransition, SlideTransition
@@ -21,7 +23,18 @@ class HowtoScreen(Screen):
     pass
 
 class GameScreen(Screen):
-	pass
+	
+	def __init__(self, **kwargs):
+		super(GameScreen, self).__init__(**kwargs)
+		self.count = 0
+
+	def show_message(self, text, spacing, padding, cols):
+		if self.count == 0:
+			with self.canvas:
+				Color(1, 1, 1, .7)
+				Rectangle(pos=(self.pos[0], (self.pos[1] + (self.size[0] / 2)) - (padding[0] * (cols + 1))), size=(self.size[0], self.size[0] + (spacing[0] * 2)))
+			self.add_widget(Label(text=text, color=(0,0,0,1), font_size=self.width/10))
+		self.count += 1
 
 class GameArea(GridLayout):
 
@@ -35,9 +48,13 @@ class GameArea(GridLayout):
 		import game
 		self.game = game.Game(4)
 
-		# グリッドレイアウトの行数と列数を設定
+		# グリッドレイアウトの行数などを設定
 		self.cols = self.game.get_blockcount()
 		self.rows = self.game.get_blockcount()
+		self.size_hint = (1, .6)
+		self.pos_hint = {'center_y':0.5}
+		self.padding = 10
+		self.spacing = 10
 
 		# ランダムに2のブロックを2個生成
 		self.game.add_block_of_two()
@@ -82,12 +99,11 @@ class GameArea(GridLayout):
 			self.game.add_block_of_two()
 		self.update_blocks()
 
-		if self.game.get_num_count(2048) > 0:
-			print('ゲームクリア!')
+		if self.game.can_move() == False:
+			self.parent.show_message('ゲームオーバー!', self.spacing, self.padding, self.cols)
 
-		if self.game.get_num_count(0) == 0:
-			if self.game.can_move() == False:
-				print('ゲームオーバー!')
+		if self.game.get_num_count(2048) > 0:
+			self.parent.show_message('ゲームクリア!', self.spacing, self.padding, self.cols)
     
 	def on_touch_down(self, touch):
 		if self.collide_point(*touch.pos):

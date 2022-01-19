@@ -54,24 +54,25 @@ class Game():
 		for y in range(self.get_blockcount()):
 			for x in range(self.get_blockcount()):
 				if self.get_block(x, y) == 0:
-					continue
+					return True
 
 				for i in range(4):
-					try:
-						if i == 0:
+					if i == 0:
+						if y - 1 >= 0:
 							if self.get_block(x, y - 1) == self.get_block(x, y):
 								return True
-						elif i == 1:
+					elif i == 1:
+						if y + 1 <= self.get_blockcount() - 1:
 							if self.get_block(x, y + 1) == self.get_block(x, y):
 								return True
-						elif i == 2:
+					elif i == 2:
+						if x - 1 >= 0:
 							if self.get_block(x - 1, y) == self.get_block(x, y):
 								return True
-						elif i == 3:
+					elif i == 3:
+						if x + 1 <= self.get_blockcount() - 1:
 							if self.get_block(x + 1, y) == self.get_block(x, y):
 								return True
-					except IndexError:
-						continue
 
 		return False
 
