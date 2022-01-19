@@ -27,10 +27,16 @@ class GameArea(GridLayout):
 
 	def __init__(self, **kwargs):
 		super(GameArea, self).__init__(**kwargs)
+		self._keyboard = Window.request_keyboard(self._keyboard_closed, self)
+		self._keyboard.bind(on_key_down=self._on_keyboard_down)
 
 		# ゲームクラスのインスタンス生成
 		import game
 		self.game = game.Game(4)
+
+		# グリッドレイアウトの行数と列数を設定
+		self.cols = self.game.get_blockcount()
+		self.rows = self.game.get_blockcount()
 
 		# ランダムに2のブロックを2個生成
 		self.game.add_block_of_two()
@@ -72,6 +78,24 @@ class GameArea(GridLayout):
 	def on_touch_down(self, touch):
 		if self.collide_point(*touch.pos):
 			print(touch)
+
+	def _keyboard_closed(self):
+		self._keyboard.unbind(on_key_down=self._on_keyboard_down)
+		self._keyboard = None
+
+	def _on_keyboard_down(self, keyboard, keycode, text, modifiers):
+		if keycode[1] in ['up', 'down', 'left', 'right']:
+			self.game.move_blocks(keycode[1])
+			if self.game.get_num_count(0) > 0 and self.game.get_moved() == True:
+				self.game.add_block_of_two()
+			self.update_blocks()
+
+			if self.game.get_num_count(2048) > 0:
+				print('ゲームクリア!')
+
+			if self.game.get_num_count(0) == 0:
+				if self.game.can_move() == False:
+					print('ゲームオーバー!')
  
 class GameApp(App):
 
