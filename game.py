@@ -7,6 +7,10 @@ class Game():
 		self.moved = False
 		self.blocks = [[0] * self.blockcount for i in range(self.blockcount)]
 
+		# スコアクラスのインスタンス生成
+		import score
+		self.score = score.Score()
+
 		self.infos = {
 			'up': {'startX': 0, 'startY': 0, 'moveX': 0, 'moveY': 1},
 			'left': {'startX': 0, 'startY': 0, 'moveX': 1, 'moveY': 0},
@@ -115,6 +119,7 @@ class Game():
 					break
 
 				if self.get_block(dx, dy) == self.get_block(nx, ny) and self.get_block(dx, dy) > 0:
+					self.score.set_score(self.score.get_score() + (self.get_block(dx, dy) * 2))
 					self.set_block(dx, dy, self.get_block(dx, dy) * 2)
 					self.set_block(nx, ny, 0)
 					self.set_moved(True)

@@ -1,10 +1,61 @@
 <GameScreen>:
 
+    BoxLayout:
+        id: score
+        orientation: 'vertical'
+        size_hint: (.4, .12)
+        pos_hint: {'x':0.05, 'y':0.85}
+        canvas.before:
+            Color:
+                rgba: (.87, .72, .52, 1)
+            RoundedRectangle:
+                pos: self.pos
+                size: self.size
+                radius: [20,]
+        Label:
+            text: 'SCORE'
+            color: (0, 0, 0, 1)
+            font_size: root.width / 15
+        Label:
+            id: scorelabel
+            text: '0'
+            color: (1, 1, 1, 1)
+            font_size: root.width / (len(self.text) + 7)
+
+    BoxLayout:
+        id: best
+        orientation: 'vertical'
+        size_hint: (.4, .12)
+        pos_hint: {'x':0.55, 'y':0.85}
+        canvas.before:
+            Color:
+                rgba: (.87, .72, .52, 1)
+            RoundedRectangle:
+                pos: self.pos
+                size: self.size
+                radius: [20,]
+        Label:
+            text: 'BEST'
+            color: (0, 0, 0, 1)
+            font_size: root.width / 15
+        Label:
+            id: bestlabel
+            text: '0'
+            color: (1, 1, 1, 1)
+            font_size: root.width / (len(self.text) + 7)
+
+    GameArea:
+        id: gamearea
+        canvas.before:
+            Color:
+                rgba: (.5, .5, .5, 1)
+            Rectangle:
+                pos: self.pos
+                size: self.size
+
     Button:
-        text: '最初から'
-        size_hint: (.7, .12)
-        pos_hint: {'center_x':0.5, 'y':0.84}
-        font_size: root.width / 8
+        size_hint: (.3, .12)
+        pos_hint: {'x':0.1, 'y':0.05}
         background_normal: ''
         background_color: 0,0,0,0
         canvas.before:
@@ -16,19 +67,15 @@
                 radius: [20,]
         on_press:
             app.restart()
-
-    GameArea:
-        canvas.before:
-            Color:
-                rgba: (.5, .5, .5, 1)
-            Rectangle:
-                pos: self.pos
-                size: self.size
+        Image:
+            source: 'res/images/restart.png'
+            center_x: self.parent.center_x
+            center_y: self.parent.center_y
+            width: root.width / 7
 
     Button:
-        text: '遊びかた'
-        size_hint: (.7, .12)
-        pos_hint: {'center_x':0.5, 'y':0.05}
+        size_hint: (.3, .12)
+        pos_hint: {'x':0.6, 'y':0.05}
         font_size: root.width / 8
         background_normal: ''
         background_color: 0,0,0,0
@@ -42,3 +89,8 @@
         on_press:
             root.manager.current = 'howto'
             root.manager.transition.direction = 'right'
+        Image:
+            source: 'res/images/howto.png'
+            center_x: self.parent.center_x
+            center_y: self.parent.center_y
+            width: root.width / 7

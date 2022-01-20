@@ -1,4 +1,5 @@
 import japanize_kivy
+import threading
 from kivy.app import App
 from kivy.lang import Builder
 from kivy.uix.label import Label
@@ -35,6 +36,10 @@ class GameScreen(Screen):
 				Rectangle(pos=(self.pos[0], (self.pos[1] + (self.size[0] / 2)) - (padding[0] * (cols + 1))), size=(self.size[0], self.size[0] + (spacing[0] * 2)))
 			self.add_widget(Label(text=text, color=(0,0,0,1), font_size=self.width/10))
 		self.count += 1
+
+	def update_scores(self, score, bestscore):
+		self.ids.scorelabel.text = str(score)
+		self.ids.bestlabel.text = str(bestscore)
 
 class GameArea(GridLayout):
 
@@ -92,6 +97,18 @@ class GameArea(GridLayout):
 					background_color = self.colors[self.game.get_block(x, y)]['background_color'],
 					color = self.colors[self.game.get_block(x, y)]['color']
 				))
+
+		# スコアのアップデート
+		self.update_scores()
+
+	def update_scores(self):
+		if self.game.score.get_score() > self.game.score.get_bestscore():
+			self.game.score.set_bestscore(self.game.score.get_score())
+		if self.parent != None:
+			self.parent.update_scores(self.game.score.get_score(), self.game.score.get_bestscore())
+		else:
+			bestscorethread = threading.Timer(0.01, self.update_scores)
+			bestscorethread.start()
 
 	def game_progress(self, direct):
 		self.game.move_blocks(direct)
