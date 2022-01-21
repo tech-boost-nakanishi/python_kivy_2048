@@ -107,7 +107,7 @@ class GameArea(GridLayout):
 		if self.parent != None:
 			self.parent.update_scores(self.game.score.get_score(), self.game.score.get_bestscore())
 		else:
-			bestscorethread = threading.Timer(0.01, self.update_scores)
+			bestscorethread = threading.Timer(0.1, self.update_scores)
 			bestscorethread.start()
 
 	def game_progress(self, direct):
