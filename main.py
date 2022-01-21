@@ -111,6 +111,9 @@ class GameArea(GridLayout):
 			bestscorethread.start()
 
 	def game_progress(self, direct):
+		if self.game.can_move() == False or self.game.get_num_count(2048) > 0:
+			return
+
 		self.game.move_blocks(direct)
 		if self.game.get_num_count(0) > 0 and self.game.get_moved() == True:
 			self.game.add_block_of_two()
@@ -120,7 +123,7 @@ class GameArea(GridLayout):
 			self.parent.show_message('ゲームオーバー!', self.spacing, self.padding, self.cols)
 
 		if self.game.get_num_count(2048) > 0:
-			self.parent.show_message('ゲームクリア!', self.spacing, self.padding, self.cols)
+			self.parent.show_message('クリア!', self.spacing, self.padding, self.cols)
     
 	def on_touch_down(self, touch):
 		if self.collide_point(*touch.pos):
