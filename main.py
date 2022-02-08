@@ -45,8 +45,6 @@ class GameArea(GridLayout):
 
 	def __init__(self, **kwargs):
 		super(GameArea, self).__init__(**kwargs)
-		self._keyboard = Window.request_keyboard(self._keyboard_closed, self)
-		self._keyboard.bind(on_key_down=self._on_keyboard_down)
 		self.sx = self.sy = None
 
 		# ゲームクラスのインスタンス生成
@@ -151,14 +149,6 @@ class GameArea(GridLayout):
 			else:
 				self.game_progress('up')
 		self.sx = self.sy = None
-
-	def _keyboard_closed(self):
-		self._keyboard.unbind(on_key_down=self._on_keyboard_down)
-		self._keyboard = None
-
-	def _on_keyboard_down(self, keyboard, keycode, text, modifiers):
-		if keycode[1] in ['up', 'down', 'left', 'right']:
-			self.game_progress(keycode[1])
  
 class GameApp(App):
 
