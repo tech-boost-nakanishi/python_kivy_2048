@@ -1,5 +1,4 @@
 import japanize_kivy
-import threading
 from kivy.app import App
 from kivy.lang import Builder
 from kivy.uix.label import Label
@@ -16,6 +15,8 @@ Window.clearcolor = (1, 1, 1, 1)
 Builder.load_file('menu.kv')
 Builder.load_file('howto.kv')
 Builder.load_file('gamekv.kv')
+
+bestscore = 0
 
 class MenuScreen(Screen):
     pass
@@ -79,6 +80,9 @@ class GameArea(GridLayout):
 			2048: {'background_color':(1, 1, 0, 1), 'color':(0, 0, 0, 1), 'font_size':self.width / 5}
 		}
 
+		global bestscore
+		bestscore = self.game.score.get_bestscore()
+
 		self.update_blocks()
 
 	def update_blocks(self):
@@ -104,9 +108,6 @@ class GameArea(GridLayout):
 			self.game.score.set_bestscore(self.game.score.get_score())
 		if self.parent != None:
 			self.parent.update_scores(self.game.score.get_score(), self.game.score.get_bestscore())
-		else:
-			bestscorethread = threading.Timer(0.1, self.update_scores)
-			bestscorethread.start()
 
 	def game_progress(self, direct):
 		if self.game.can_move() == False or self.game.get_num_count(2048) > 0:
@@ -157,11 +158,11 @@ class GameApp(App):
 		self.title = '2048'
  
 	def build(self):
-		Window.size = (360, 640)
 		self.sm = ScreenManager()
 		self.sm.add_widget(MenuScreen(name='menu'))
 		self.sm.add_widget(HowtoScreen(name='howto'))
 		self.sm.add_widget(GameScreen(name='game'))
+		self.sm.get_screen('game').ids.bestlabel.text = str(bestscore)
 		return self.sm
 
 	def restart(self):
@@ -170,6 +171,7 @@ class GameApp(App):
 		self.sm.add_widget(GameScreen(name='game'))
 		self.sm.current = 'game'
 		self.sm.transition = SlideTransition()
+		self.sm.get_screen('game').ids.bestlabel.text = str(bestscore)
  
 if __name__ == '__main__':
     GameApp().run()
